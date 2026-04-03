@@ -4,11 +4,8 @@ import type { NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
-    console.log("Path name",pathName)
     let isAuthenticated = false;
-
     const { data } = await userService.getSession();
-    console.log(data)
     if (data) {
         isAuthenticated = true;
     }
