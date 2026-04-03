@@ -1,7 +1,9 @@
+import Feed from "./feed/page";
+
 export default function Home() {
   return (
     <div>
-      Home
+      <Feed></Feed>
     </div>
   );
 }
