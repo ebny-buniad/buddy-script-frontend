@@ -1,16 +1,64 @@
+"use client"
+import { authClient } from '@/app/lib/auth-clients';
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
-
-{/* <Image
-    src="/assets/images/shape1.svg"
-    width={500}
-    height={500}
-    alt="Picture of the author"
-    className="_shape_img"
-/> */}
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function Registration() {
+    const router = useRouter();
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
+        agree: false,
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" || type === "radio" ? checked : value,
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const value = {
+            name: formData?.name,
+            email: formData?.email,
+            password: formData?.password
+        }
+
+
+        const toastId = toast.loading("Creating user");
+        try {
+            const { data, error } = await authClient.signUp.email(value)
+
+            if (error) {
+                toast.error(error.message, { id: toastId });
+                return;
+            }
+            toast.success("User Created Successfully", { id: toastId });
+
+            if (data?.user) {
+                router.replace("/")
+                router.refresh()
+                return;
+            } else {
+                router.replace("/");
+                router.refresh();
+            }
+
+
+        } catch (err) {
+            toast.error("Something went wrong, please try again.", { id: toastId });
+        }
+
+    };
+
     return (
         <div>
             <section className="_social_registration_wrapper _layout_main_wrapper">
@@ -120,51 +168,71 @@ export default function Registration() {
                                         {" "}
                                         <span>Or</span>
                                     </div>
-                                    <form className="_social_registration_form">
+                                    <form className="_social_registration_form" onSubmit={handleSubmit}>
                                         <div className="row">
                                             <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                                 <div className="_social_registration_form_input _mar_b14">
-                                                    <label className="_social_registration_label _mar_b8">
-                                                        Email
-                                                    </label>
+                                                    <label className="_social_registration_label _mar_b8">Name</label>
+                                                    <input
+                                                        type="text"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleChange}
+                                                        className="form-control _social_registration_input"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div className="_social_registration_form_input _mar_b14">
+                                                    <label className="_social_registration_label _mar_b8">Email</label>
                                                     <input
                                                         type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleChange}
                                                         className="form-control _social_registration_input"
                                                     />
                                                 </div>
                                             </div>
+
                                             <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                                 <div className="_social_registration_form_input _mar_b14">
-                                                    <label className="_social_registration_label _mar_b8">
-                                                        Password
-                                                    </label>
+                                                    <label className="_social_registration_label _mar_b8">Password</label>
                                                     <input
                                                         type="password"
+                                                        name="password"
+                                                        value={formData.password}
+                                                        onChange={handleChange}
                                                         className="form-control _social_registration_input"
                                                     />
                                                 </div>
                                             </div>
+
                                             <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                                 <div className="_social_registration_form_input _mar_b14">
-                                                    <label className="_social_registration_label _mar_b8">
-                                                        Repeat Password
-                                                    </label>
+                                                    <label className="_social_registration_label _mar_b8">Repeat Password</label>
                                                     <input
                                                         type="password"
+                                                        name="repeatPassword"
+                                                        value={formData.repeatPassword}
+                                                        onChange={handleChange}
                                                         className="form-control _social_registration_input"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div className="row">
                                             <div className="col-lg-12 col-xl-12 col-md-12 col-sm-12">
                                                 <div className="form-check _social_registration_form_check">
                                                     <input
                                                         className="form-check-input _social_registration_form_check_input"
-                                                        type="radio"
-                                                        name="flexRadioDefault"
+                                                        type="checkbox"
+                                                        name="agree"
+                                                        checked={formData.agree}
+                                                        onChange={handleChange}
                                                         id="flexRadioDefault2"
-                                                    //   defaultChecked=""
                                                     />
                                                     <label
                                                         className="form-check-label _social_registration_form_check_label"
@@ -175,14 +243,15 @@ export default function Registration() {
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div className="row">
                                             <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
                                                 <div className="_social_registration_form_btn _mar_t40 _mar_b60">
                                                     <button
-                                                        type="button"
+                                                        type="submit"
                                                         className="_social_registration_form_btn_link _btn1"
                                                     >
-                                                        Login now
+                                                        Register
                                                     </button>
                                                 </div>
                                             </div>

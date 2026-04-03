@@ -1,7 +1,56 @@
+"use client"
+import { authClient } from "@/app/lib/auth-clients";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
+
+    const router = useRouter();
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const value = {
+            email: formData?.email,
+            password: formData?.password
+        }
+        const toastId = toast.loading("Login user");
+        try {
+            const { data, error } = await authClient.signIn.email(value)
+            console.log(data)
+            if (error) {
+                toast.error(error.message, { id: toastId });
+                return;
+            }
+            toast.success("User login Successfully", { id: toastId });
+            if (data?.user) {
+                router.replace("/")
+                router.refresh()
+                return;
+            } else {
+                router.replace("/");
+                router.refresh();
+            }
+        } catch (err) {
+            toast.error("Something went wrong, please try again.", { id: toastId });
+        }
+    };
 
     return (
         <section className="_social_login_wrapper _layout_main_wrapper">
@@ -101,25 +150,29 @@ export default function LoginPage() {
                                     {" "}
                                     <span>Or</span>
                                 </div>
-                                <form className="_social_login_form">
+                                <form className="_social_login_form" onSubmit={handleSubmit}>
                                     <div className="row">
                                         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                            <div className="_social_login_form_input _mar_b14">
-                                                <label className="_social_login_label _mar_b8">Email</label>
+                                            <div className="_social_registration_form_input _mar_b14">
+                                                <label className="_social_registration_label _mar_b8">Email</label>
                                                 <input
                                                     type="email"
-                                                    className="form-control _social_login_input"
+                                                    name="email"
+                                                    value={formData.email}
+                                                    onChange={handleChange}
+                                                    className="form-control _social_registration_input"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                            <div className="_social_login_form_input _mar_b14">
-                                                <label className="_social_login_label _mar_b8">
-                                                    Password
-                                                </label>
+                                            <div className="_social_registration_form_input _mar_b14">
+                                                <label className="_social_registration_label _mar_b8">Password (8 Char)</label>
                                                 <input
                                                     type="password"
-                                                    className="form-control _social_login_input"
+                                                    name="password"
+                                                    value={formData.password}
+                                                    onChange={handleChange}
+                                                    className="form-control _social_registration_input"
                                                 />
                                             </div>
                                         </div>
@@ -154,7 +207,7 @@ export default function LoginPage() {
                                         <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
                                             <div className="_social_login_form_btn _mar_t40 _mar_b60">
                                                 <button
-                                                    type="button"
+                                                    type="submit"
                                                     className="_social_login_form_btn_link _btn1"
                                                 >
                                                     Login now
