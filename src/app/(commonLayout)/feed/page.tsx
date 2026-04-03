@@ -5,8 +5,13 @@ import LeftSideBar from '@/app/components/feed/LeftSideBar'
 import MiddleLayout from '@/app/components/feed/MiddleLayout'
 import RightSideBar from '@/app/components/feed/RightSideBar'
 import Script from 'next/script'
+import { getUser } from '@/app/services/getUser'
 
-export default function Feed() {
+export default async function Feed() {
+
+  const user = await getUser();
+  console.log("User in feed", user)
+
   return (
     <div className="_layout _layout_main_wrapper">
       <Script
@@ -21,7 +26,7 @@ export default function Feed() {
       <div className='_main_layout'>
 
         {/* Desktop Menu Start */}
-        <Navbar></Navbar>
+        <Navbar user={user}></Navbar>
         {/* Desktop Menu End */}
 
         {/* Mobile Menu Start */}
