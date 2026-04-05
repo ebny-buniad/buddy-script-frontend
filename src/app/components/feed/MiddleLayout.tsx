@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
+import { createComment } from '@/app/actions/comment.actions';
 import { createPost } from '@/app/actions/post.actions';
 import { getTime } from '@/app/utils/getTime';
 import Image from 'next/image'
@@ -78,13 +79,13 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
 
 
 
-    const handleSubmitComment = (
+    const handleSubmitComment = async (
         e: React.FormEvent,
         postId: string,
         parentId: string | null = null
     ) => {
         e.preventDefault();
-
+        const p_Id = postId;
         const text = parentId
             ? c_comments[parentId]
             : comments[postId];
@@ -93,11 +94,14 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
 
         const data = {
             text,
-            parentId, 
+            parentId,
+            p_Id
         };
-
-        console.log("Final Data:", data);
-
+        const result = await createComment(data);
+        if(result?.data?.success === true){
+            toast.success('Post comment')
+            router.refresh();
+        }
         // clear input
         if (parentId) {
             setC_Comments(prev => ({
@@ -111,11 +115,6 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
             }));
         }
     };
-
-
-
-
-
 
 
 
@@ -369,9 +368,16 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                         <form id='myForm' onSubmit={handleSubmit}>
                             <div className="_feed_inner_text_area_box">
                                 <div className="_feed_inner_text_area_box_image">
-                                    <img
+                                    {/* <img
                                         src="assets/images/txt_img.png"
                                         alt="Image"
+                                        className="_txt_img"
+                                    /> */}
+                                    <Image
+                                        src={user?.image}
+                                        width={0}
+                                        height={0}
+                                        alt=''
                                         className="_txt_img"
                                     />
                                 </div>
@@ -802,15 +808,19 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                     <h4 className="_feed_inner_timeline_post_title">
                                         {post?.text}
                                     </h4>
-                                    <div className="_feed_inner_timeline_image">
-                                        <Image
-                                            src={post?.image || "/default-image.png"}
-                                            width={500}
-                                            height={0}
-                                            alt=""
-                                            className="_time_img"
-                                        />
-                                    </div>
+                                    {
+                                        post?.image?.trim() && (
+                                            <div className="_feed_inner_timeline_image">
+                                                <Image
+                                                    src={post.image}
+                                                    width={500}
+                                                    height={500}
+                                                    alt=""
+                                                    className="_time_img"
+                                                />
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 <div className="_feed_inner_timeline_total_reacts _padd_r24 _padd_l24 _mar_b26">
                                     <div className="_feed_inner_timeline_total_reacts_image">
