@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
+import { createPost } from '@/app/actions/post.actions';
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react'
+import { toast } from 'sonner';
 
 export default function MiddleLayout() {
-
+    const router = useRouter();
     const fileRef = useRef<HTMLInputElement | null>(null);
 
     const [image, setImage] = useState("");
@@ -37,13 +40,19 @@ export default function MiddleLayout() {
         }
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         const data = {
             text: text,
             image: image
         }
-        console.log('Data for db', data)
+        const result = await createPost(data);
+        if (result.data.success === true) {
+            toast.success(`${result.data.message}`);
+            setText("");
+            setImage("")
+        }
+        router.refresh();
     };
 
 

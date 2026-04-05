@@ -1,3 +1,4 @@
+"use server"
 import { cookies } from "next/headers";
 
 interface ICreatePost {
@@ -8,6 +9,7 @@ interface ICreatePost {
 const NEXT_PUBLIC = process.env.NEXT_PUBLIC_API_URL;
 
 export async function createPost(payload: ICreatePost) {
+    console.log("Post Data ---",payload)
     try {
         const cookieStore = await cookies();
         const data = payload;
