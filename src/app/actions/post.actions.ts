@@ -9,7 +9,6 @@ interface ICreatePost {
 const NEXT_PUBLIC = process.env.NEXT_PUBLIC_API_URL;
 
 export async function createPost(payload: ICreatePost) {
-    console.log("Post Data ---",payload)
     try {
         const cookieStore = await cookies();
         const data = payload;
@@ -24,8 +23,6 @@ export async function createPost(payload: ICreatePost) {
             body: JSON.stringify(data)
         });
         const result = await res.json();
-        console.log(result)
-
         return {
             data: result,
             success: true,

@@ -22,7 +22,7 @@ export default function RightSideBar() {
                                 <div className="_right_inner_area_info_box_image">
                                     <a href="profile.html">
                                         <img
-                                            src="assets/images/Avatar.png"
+                                            src="assets/images/people3.png"
                                             alt="Image"
                                             className="_ppl_img"
                                         />

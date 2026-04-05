@@ -2003,16 +2003,25 @@
 }
 
 ._post_img {
-    max-width: 44px;
+    width: 44px;
+    height: 44px;
     -webkit-transition: .2s all ease;
     -o-transition: .2s all ease;
     transition: .2s all ease;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 ._post_img:hover {
     background: #000;
     opacity: .7;
+}
+
+._react_user_img, ._comment_img{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 ._feed_inner_timeline_post_box {
@@ -6907,8 +6916,7 @@
 }
 
 ._comment_img1 {
-    max-width: 40px;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 ._comment_area {
