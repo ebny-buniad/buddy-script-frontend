@@ -10,15 +10,15 @@ export const getTime = (dateString: string) => {
     const days = Math.floor(diff / 86400000);
 
     if (seconds < 10) return "Just now";
-    if (seconds < 60) return `${seconds} seconds ago`;
+    if (seconds < 60) return `${seconds}s`;
 
-    if (minutes < 60) return `${minutes} minutes ago`;
+    if (minutes < 60) return `${minutes}m`;
 
-    if (hours < 24) return `${hours} hours ago`;
+    if (hours < 24) return `${hours}h`;
 
     if (days === 1) return "Yesterday";
 
-    if (days < 7) return `${days} days ago`;
+    if (days < 7) return `${days}d`;
 
     return postTime.toLocaleDateString("en-US", {
         day: "numeric",

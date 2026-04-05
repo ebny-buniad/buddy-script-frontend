@@ -6979,6 +6979,7 @@
 ._total_react {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 ._total_react span {
@@ -6991,6 +6992,11 @@
 
 ._reaction_heart svg path {
     stroke: red;
+}
+
+._send_icon{
+    width: 14px;
+    rotate: -45deg;
 }
 
 ._total {

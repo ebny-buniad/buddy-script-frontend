@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { createComment } from '@/app/actions/comment.actions';
-import { createPost } from '@/app/actions/post.actions';
+import { createComment, createCommentReact } from '@/app/actions/comment.actions';
+import { createPost, createPostReact } from '@/app/actions/post.actions';
+import { commentReact } from '@/app/constants/commentReact';
 import { getTime } from '@/app/utils/getTime';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
@@ -76,9 +77,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
     };
 
 
-
-
-
+    // Handel Comment submit
     const handleSubmitComment = async (
         e: React.FormEvent,
         postId: string,
@@ -98,7 +97,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
             p_Id
         };
         const result = await createComment(data);
-        if(result?.data?.success === true){
+        if (result?.data?.success === true) {
             toast.success('Post comment')
             router.refresh();
         }
@@ -116,6 +115,27 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
         }
     };
 
+    // Handel comment reaction
+    const handelCommentReact = async (id: string, type: string) => {
+        const data = {
+            id,
+            type
+        }
+        const result = await createCommentReact(data);
+        if (result?.data?.success === true) {
+            router.refresh();
+        }
+    }
+
+    // Handel post react
+
+    const handelPostReact = async (id: string, type: string) => {
+        const paylaod = { id, type }
+        const result = await createPostReact(paylaod);
+        if (result?.data?.success === true) {
+            router.refresh();
+        }
+    }
 
 
     return (
@@ -826,7 +846,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                     <div className="_feed_inner_timeline_total_reacts_image">
 
                                         {/* User reaction images */}
-                                        {post.postReactions.slice(0, 5).map((reaction: any) => (
+                                        {post.postReactions.slice(0, 2).map((reaction: any) => (
                                             <Image
                                                 key={reaction.id}
                                                 src={reaction.user?.image || "/assets/images/Avater.png"}
@@ -838,7 +858,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                         ))}
 
                                         {/* Count if more than 5 */}
-                                        {post.postReactions.length > 5 ? (
+                                        {post.postReactions.length > 2 ? (
                                             <p className="_feed_inner_timeline_total_reacts_para">
                                                 {post._count?.postReactions || post.postReactions.length}+
                                             </p>
@@ -856,38 +876,33 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                     </div>
                                 </div>
                                 <div className="_feed_inner_timeline_reaction">
-                                    <button className="_feed_inner_timeline_reaction_emoji _feed_reaction _feed_reaction_active">
-                                        <span className="_feed_inner_timeline_reaction_link">
-                                            {" "}
-                                            <span>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width={19}
-                                                    height={19}
-                                                    fill="none"
-                                                    viewBox="0 0 19 19"
-                                                >
-                                                    <path
-                                                        fill="#FFCC4D"
-                                                        d="M9.5 19a9.5 9.5 0 100-19 9.5 9.5 0 000 19z"
-                                                    />
-                                                    <path
-                                                        fill="#664500"
-                                                        d="M9.5 11.083c-1.912 0-3.181-.222-4.75-.527-.358-.07-1.056 0-1.056 1.055 0 2.111 2.425 4.75 5.806 4.75 3.38 0 5.805-2.639 5.805-4.75 0-1.055-.697-1.125-1.055-1.055-1.57.305-2.838.527-4.75.527z"
-                                                    />
-                                                    <path
-                                                        fill="#fff"
-                                                        d="M4.75 11.611s1.583.528 4.75.528 4.75-.528 4.75-.528-1.056 2.111-4.75 2.111-4.75-2.11-4.75-2.11z"
-                                                    />
-                                                    <path
-                                                        fill="#664500"
-                                                        d="M6.333 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847zM12.667 8.972c.729 0 1.32-.827 1.32-1.847s-.591-1.847-1.32-1.847c-.729 0-1.32.827-1.32 1.847s.591 1.847 1.32 1.847z"
-                                                    />
-                                                </svg>
-                                                Haha
-                                            </span>
-                                        </span>
+
+                                    {/* Post react */}
+
+                                    <button
+                                        onClick={() => handelPostReact(post.id, commentReact.like)}
+                                        className="_feed_inner_timeline_reaction_emoji _feed_reaction _feed_reaction_active">
+                                        <span
+                                            className="_reaction_heart">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width={16}
+                                                height={16}
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth={2}
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="feather feather-heart"
+                                            >
+                                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                            </svg>
+                                        </span> <span style={{ marginLeft: "10px" }}>{post?._count?.postReactions}</span>
                                     </button>
+
+
+
                                     <button className="_feed_inner_timeline_reaction_comment _feed_reaction">
                                         <span className="_feed_inner_timeline_reaction_link">
                                             {" "}
@@ -1003,7 +1018,13 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                             {/* Buttons */}
                                             <div className="_feed_inner_comment_box_icon">
                                                 <button type="submit" className="_feed_inner_comment_box_icon_btn">
-                                                    Send
+                                                    <Image
+                                                        src={`/assets/images/send-icon.png`}
+                                                        width={5}
+                                                        height={5}
+                                                        alt=''
+                                                        className='_send_icon'
+                                                    ></Image>
                                                 </button>
                                             </div>
                                         </form>
@@ -1012,7 +1033,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                 <div className="_timline_comment_main">
                                     <div className="_previous_comment">
                                         <button type="button" className="_previous_comment_txt">
-                                            View 4 previous comments
+                                            View {Math.max(post._count.comments - 2, 0)} previous comments
                                         </button>
                                     </div>
 
@@ -1054,23 +1075,9 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                                         </div>
                                                         <div className="_total_reactions">
                                                             <div className="_total_react">
-                                                                <span className="_reaction_like">
-                                                                    <svg
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        width={16}
-                                                                        height={16}
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth={2}
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        className="feather feather-thumbs-up"
-                                                                    >
-                                                                        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-                                                                    </svg>
-                                                                </span>
-                                                                <span className="_reaction_heart">
+                                                                <span
+                                                                    onClick={() => handelCommentReact(comment.id, commentReact.like)}
+                                                                    className="_reaction_heart">
                                                                     <svg
                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                         width={16}
@@ -1084,6 +1091,25 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                                                         className="feather feather-heart"
                                                                     >
                                                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                                                    </svg>
+                                                                </span>
+                                                                <span
+                                                                    onClick={() => handelCommentReact(comment.id, commentReact.dislike)}
+                                                                    className="_reaction_like">
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        width={16}
+                                                                        height={16}
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth={2}
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        className="feather feather-thumbs-down"
+                                                                        style={{ transform: "scaleX(-1)" }}
+                                                                    >
+                                                                        <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zM17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3" />
                                                                     </svg>
                                                                 </span>
                                                             </div>
@@ -1102,7 +1128,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                                                         <span>Share</span>
                                                                     </li>
                                                                     <li>
-                                                                        <span className="_time_link">.21m</span>
+                                                                        <span className="_time_link">.{getTime(comment.createdAt)}</span>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -1178,7 +1204,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))
+                                        )).slice(0, 2)
                                     }
 
 
