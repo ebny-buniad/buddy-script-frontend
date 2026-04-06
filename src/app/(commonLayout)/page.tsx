@@ -10,6 +10,7 @@ import { getAllPosts } from '@/app/services/post.service'
 
 export default async function Feed() {
   const user = await getUser();
+  console.log(user)
   const posts = await getAllPosts();
 
   return (
