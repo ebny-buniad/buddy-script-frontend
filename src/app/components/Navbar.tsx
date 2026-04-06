@@ -2,11 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image'
 import { authClient } from '../lib/auth-clients'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar({ user }: { user: any }) {
+    const router = useRouter();
     // Handel Logout
     const handelLogout = async () => {
         await authClient.signOut();
+        router.replace("/auth/login")
+        router.refresh();
     }
     return (
         <div>
@@ -392,7 +396,7 @@ export default function Navbar({ user }: { user: any }) {
                                         </a>
                                     </li>
                                     <li onClick={() => handelLogout()} className="_nav_dropdown_list_item">
-                                        <a href="#0" className="_nav_dropdown_link">
+                                        <a href="" className="_nav_dropdown_link">
                                             <div className="_nav_drop_info">
                                                 <span>
                                                     <svg

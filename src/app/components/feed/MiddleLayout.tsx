@@ -901,8 +901,6 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                         </span> <span style={{ marginLeft: "10px" }}>{post?._count?.postReactions}</span>
                                     </button>
 
-
-
                                     <button className="_feed_inner_timeline_reaction_comment _feed_reaction">
                                         <span className="_feed_inner_timeline_reaction_link">
                                             {" "}
@@ -1204,28 +1202,13 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                                                     </div>
                                                 </div>
                                             </div>
-                                        )).slice(0, 2)
+                                        )).slice(0, 3)
                                     }
-
-
-
-
                                     {/* Comment end */}
-
-
                                 </div>
                             </div>
                         ))
                     }
-
-
-
-
-
-
-
-
-
                 </div>
             </div>
         </div>

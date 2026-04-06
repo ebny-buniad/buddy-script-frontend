@@ -9,7 +9,6 @@ export const getTime = (dateString: string) => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (seconds < 10) return "Just now";
     if (seconds < 60) return `${seconds}s`;
 
     if (minutes < 60) return `${minutes}m`;
