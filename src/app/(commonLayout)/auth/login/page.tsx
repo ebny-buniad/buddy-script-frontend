@@ -33,14 +33,13 @@ export default function LoginPage() {
         const toastId = toast.loading("Login user");
         try {
             const { data, error } = await authClient.signIn.email(value)
-            console.log(data)
             if (error) {
                 toast.error(error.message, { id: toastId });
                 return;
             }
             toast.success("User login Successfully", { id: toastId });
             if (data?.user) {
-                router.replace("/")
+                router.push("/")
                 router.refresh()
                 return;
             } else {

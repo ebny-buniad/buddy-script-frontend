@@ -9,7 +9,7 @@ export default function Navbar({ user }: { user: any }) {
     // Handel Logout
     const handelLogout = async () => {
         await authClient.signOut();
-        router.replace("/auth/login")
+        router.push("/auth/login");
         router.refresh();
     }
     return (

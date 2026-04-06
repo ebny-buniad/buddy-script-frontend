@@ -655,7 +655,7 @@ export default function MiddleLayout({ postsData, user }: { postsData: any, user
                     {/* News feed post ---------------- start */}
 
                     {
-                        posts.map((post: any) => (
+                        posts?.map((post: any) => (
                             <div key={post.id} className="_feed_inner_timeline_post_area _b_radious6 _padd_b24 _padd_t24 _mar_b16">
                                 <div className="_feed_inner_timeline_content _padd_r24 _padd_l24">
                                     <div className="_feed_inner_timeline_post_top">

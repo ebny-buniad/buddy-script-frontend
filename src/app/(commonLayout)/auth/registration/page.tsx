@@ -31,12 +31,10 @@ export default function Registration() {
             email: formData?.email,
             password: formData?.password
         }
-
-
+        
         const toastId = toast.loading("Creating user");
         try {
             const { data, error } = await authClient.signUp.email(value)
-
             if (error) {
                 toast.error(error.message, { id: toastId });
                 return;
